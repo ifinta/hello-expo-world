@@ -1,5 +1,5 @@
-import React, { useState, useEffect, ReactElement } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ViewStyle, TextStyle } from 'react-native';
+import React, { useState, useEffect, useRef, ReactElement } from 'react';
+import { View, Text, StyleSheet, Animated, ViewStyle, TextStyle } from 'react-native';
 
 interface SayProps {
   text: string;
@@ -11,9 +11,9 @@ interface SpellProps {
 
 const App: React.FC = (): ReactElement => {
   return (
-    <SafeAreaView style={styles.screen}>
+    <View style={styles.screen}>
     <Say text="Hello React World!" />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -30,29 +30,49 @@ const Say: React.FC<SayProps> = ({ text }): ReactElement => {
 
 const Spell: React.FC<SpellProps> = ({ ch }): ReactElement => {
   const [color, setColor] = useState<string>("white");
-  const [width, setWidth] = useState<number>(50);
-  const [height, setHeight] = useState<number>(50);
+
+  // Animálható értékek inicializálása (useRef, hogy megmaradjanak rendereléskor)
+  const animSize = useRef(new Animated.Value(50)).current;
 
   useEffect(() => {
     const colors: string[] = ["yellow", "aqua", "red", "green", "lightgreen", "pink", "bisque", "lightgrey", "black"];
+
     const timer = setInterval(() => {
-      setColor(colors[Math.floor(Math.random() * colors.length)]);
-      setWidth(Math.max(30, Math.round(Math.random() * 100)));
-      setHeight(Math.max(30, Math.round(Math.random() * 100)));
+      const nextSize = Math.max(30, Math.round(Math.random() * 100));
+      const nextColor = colors[Math.floor(Math.random() * colors.length)];
+
+      // Animáció indítása: méret és szín folyamatos átmenete
+      Animated.timing(animSize, {
+        toValue: nextSize,
+        duration: 800, // 0.8 másodperc alatt úszik át
+        useNativeDriver: false, // Mérethez false szükséges
+      }).start();
+
+      setColor(nextColor);
     }, 1000);
+
     return () => clearInterval(timer);
   }, []);
 
-  const dynamicBoxStyle: ViewStyle = {
-    backgroundColor: color,
-    width: width,
-    height: height,
+  // Animált stílusok összerakása
+  const animatedBoxStyle = {
+    backgroundColor: color, // A színváltás alapértelmezetten is lágy lesz a legtöbb View-n
+    width: animSize,
+    height: animSize,
+  };
+
+  const animatedTextStyle: Animated.AnimatedProps<TextStyle> = {
+    // A betűméretet az animált magassághoz kötjük
+    fontSize: Animated.multiply(animSize, 0.6),
   };
 
   return (
-    <View style={[styles.spellContainer, dynamicBoxStyle]}>
-    <Text style={styles.spellText}>{ch}</Text>
-    </View>
+    // View helyett Animated.View kell az animáláshoz
+    <Animated.View style={[styles.spellContainer, animatedBoxStyle]}>
+    <Animated.Text style={[styles.spellText, animatedTextStyle]}>
+    {ch}
+    </Animated.Text>
+    </Animated.View>
   );
 };
 
