@@ -13,7 +13,7 @@ interface SpellProps {
 const App: React.FC = (): ReactElement => {
   return (
     <SafeAreaView style={styles.screen}>
-    <Say text="Hello React World!" />
+    <Say text="Hello Expo World!" />
     </SafeAreaView>
   );
 };
