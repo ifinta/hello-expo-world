@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "hello-react-world",
-    "slug": "hello-react-world",
+    "name": "hello-expo-world",
+    "slug": "hello-expo-world",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "helloreactworld",
+    "scheme": "helloexpoworld",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -47,7 +47,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "6146355f-da94-4a4f-9ea0-93a97d9281db"
+        "projectId": "d84dc401-e075-407a-9a00-41640e4a8ccb"
       }
     },
     "owner": "ifinta"
